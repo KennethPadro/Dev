@@ -323,4 +323,15 @@ function get_products_all() {
     return $products;
 }
 
+/*
+ *Returns an array of product info for the product that matches the sku;
+ *returns a boolean false if no product matches the sku
+ *param int Sku the sku
+ **/
+
+
+function get_product_single($sku){
+
+}
+
 ?>
