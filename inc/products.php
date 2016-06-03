@@ -332,6 +332,19 @@ function get_products_all() {
 
 function get_product_single($sku){
 
+    require(ROOT_PATH . "inc/database.php");
+
+    try{
+        $results = $db->query("SELECT name, price, img, sku, paypal FROM products WHERE sku = 108");
+    } catch (Exception $e){
+        echo "Data could not be retrieved form the database.";
+        exit;
+    }
+
+    $product = $results->fetch(PDO::FETCH_ASSOC);
+
+    return $product;
+
 }
 
 ?>
