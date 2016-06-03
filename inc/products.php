@@ -327,7 +327,7 @@ function get_products_all() {
  *Returns an array of product info for the product that matches the sku;
  *returns a boolean false if no product matches the sku
  *param int Sku the sku
- **/
+ */
 
 
 function get_product_single($sku){
@@ -335,13 +335,19 @@ function get_product_single($sku){
     require(ROOT_PATH . "inc/database.php");
 
     try{
-        $results = $db->query("SELECT name, price, img, sku, paypal FROM products WHERE sku = 108");
-    } catch (Exception $e){
+        $results = $db->prepare("SELECT name, price, img, sku, paypal FROM products WHERE sku = ?");
+        $results->bindParam(1,$sku);
+        $results->execute();
+            } catch (Exception $e){
         echo "Data could not be retrieved form the database.";
         exit;
     }
 
     $product = $results->fetch(PDO::FETCH_ASSOC);
+
+    echo "<pre>";
+    var_dump($product);
+    exit();
 
     return $product;
 
