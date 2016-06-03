@@ -76,14 +76,14 @@ function get_products_all() {
     /*
     $products = array();
     $products[101] = array(
-    	"name" => "Logo Shirt, Red",
-    	"img" => "img/shirts/shirt-101.jpg",
-    	"price" => 18,
-    	"paypal" => "9P7DLECFD4LKE",
+        "name" => "Logo Shirt, Red",
+        "img" => "img/shirts/shirt-101.jpg",
+        "price" => 18,
+        "paypal" => "9P7DLECFD4LKE",
         "sizes" => array("Small","Medium","Large","X-Large")
     );
     $products[102] = array(
-    	"name" => "Mike the Frog Shirt, Black",
+        "name" => "Mike the Frog Shirt, Black",
         "img" => "img/shirts/shirt-102.jpg",
         "price" => 20,
         "paypal" => "SXKPTHN2EES3J",
@@ -323,34 +323,54 @@ function get_products_all() {
     return $products;
 }
 
+
 /*
- *Returns an array of product info for the product that matches the sku;
- *returns a boolean false if no product matches the sku
- *param int Sku the sku
+ * Returns an array of product information for the product that matches the sku;
+ * returns a boolean false if no product matches the sku
+ * @param    int      $sku     the sku
+ * @return   mixed    array    list of product information for the one matching product
+ *                    bool     false if no product matches
  */
 
 
-function get_product_single($sku){
+function get_product_single($sku) {
 
     require(ROOT_PATH . "inc/database.php");
 
-    try{
+    try {
         $results = $db->prepare("SELECT name, price, img, sku, paypal FROM products WHERE sku = ?");
         $results->bindParam(1,$sku);
         $results->execute();
-            } catch (Exception $e){
-        echo "Data could not be retrieved form the database.";
+    } catch (Exception $e) {
+        echo "Data could not be retrieved from the database.";
         exit;
     }
 
     $product = $results->fetch(PDO::FETCH_ASSOC);
 
-    echo "<pre>";
-    var_dump($product);
-    exit();
+    if ($product === false) return $product;
+
+    $product["sizes"] = array();
+
+    try {
+        $results = $db->prepare("
+            SELECT size
+            FROM   products_sizes ps
+            INNER JOIN sizes s ON ps.size_id = s.id
+            WHERE product_sku = ?
+            ORDER BY `order`");
+        $results->bindParam(1,$sku);
+        $results->execute();
+    } catch (Exception $e) {
+        echo "Data could not be retrieved from the database.";
+        exit;
+    }
+
+    while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
+        $product["sizes"][] = $row["size"];
+    }
 
     return $product;
-
 }
 
 ?>

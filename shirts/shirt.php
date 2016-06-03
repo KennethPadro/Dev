@@ -1,8 +1,5 @@
 <?php
 
-	echo "In this snapshot of the project files, the Shirt Detail pages are broken. We'll get them working again in the next badge!";
-	exit;
-
 	require_once("../inc/config.php");
 	require_once(ROOT_PATH . "inc/products.php");
 
@@ -10,8 +7,9 @@
 if (isset($_GET["id"])) {
 	$product_id = intval($_GET["id"]);
 	$product = get_product_single($product_id);
+}
 
-// a $product will only be set if an ID is specified in the query
+// a $product will only be set and not false if an ID is specified in the query
 // string and it corresponds to a real product. If no product is
 // set, then redirect to the shirts listing page; otherwise, continue
 // on and display the Shirt Details page for that $product
